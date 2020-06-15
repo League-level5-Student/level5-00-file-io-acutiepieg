@@ -89,7 +89,8 @@ public class ToDoList implements ActionListener {
 	}
 
 	public void remove() {
-
+		// create jop with buttons of each list
+		// whichever button is pressed will be removed
 	}
 
 	public void save() {
