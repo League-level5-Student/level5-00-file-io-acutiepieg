@@ -2,9 +2,15 @@ package _03_To_Do_List;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -68,10 +74,34 @@ public class ToDoList implements ActionListener {
 		frame.setVisible(true);
 		frame.pack();
 
+		autoLoad();
 	}
 
 	public static void main(String[] args) {
 		ToDoList t = new ToDoList();
+	}
+
+	public void autoLoad() {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("src/_03_To_Do_List/list"));
+
+			String line = br.readLine();
+			tasks.add(line);
+			while (line != null) {
+				line = br.readLine();
+				if (line != null) {
+					tasks.add(line);
+				}
+			}
+
+			br.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void add() {
@@ -81,24 +111,62 @@ public class ToDoList implements ActionListener {
 
 	public void view() {
 		String viewList = "";
-		for(String s: tasks) {
+		for (String s : tasks) {
 			viewList += s + '\n';
 		}
-		
-		JOptionPane.showMessageDialog(frame, viewList );
+
+		JOptionPane.showMessageDialog(frame, viewList);
 	}
 
 	public void remove() {
-		// create jop with buttons of each list
-		// whichever button is pressed will be removed
+		Object[] options = tasks.toArray();
+
+		int removeTask = JOptionPane.showOptionDialog(panel, "Which task would you like to remove?", "Remove",
+				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		tasks.remove(removeTask);
+
 	}
 
 	public void save() {
-
+		try {
+			FileWriter fw = new FileWriter("src/_03_To_Do_List/list", true);
+			for (String s : tasks) {
+				fw.write(s);
+			}
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void load() {
+		String fileName = "";
+		JFileChooser jfc = new JFileChooser();
+		int returnVal = jfc.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			fileName = jfc.getSelectedFile().getAbsolutePath();
+		}
+	
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(fileName));
 
+			String line = br.readLine();
+			tasks.add(line);
+			while (line != null) {
+				line = br.readLine();
+				if (line != null) {
+					tasks.add(line);
+				}
+			}
+
+			br.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
