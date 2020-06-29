@@ -112,18 +112,28 @@ public class ToDoList implements ActionListener {
 	public void view() {
 		String viewList = "";
 		for (String s : tasks) {
-			viewList += s + '\n';
+			if (s != null) {
+				viewList += s + '\n';
+			}
 		}
 
-		JOptionPane.showMessageDialog(frame, viewList);
+		if (viewList.equals("")) {
+			JOptionPane.showMessageDialog(frame, "No tasks added");
+		} else {
+			JOptionPane.showMessageDialog(frame, viewList);
+		}
 	}
 
 	public void remove() {
 		Object[] options = tasks.toArray();
 
-		int removeTask = JOptionPane.showOptionDialog(panel, "Which task would you like to remove?", "Remove",
-				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-		tasks.remove(removeTask);
+		if (options.length > 0) {
+			int removeTask = JOptionPane.showConfirmDialog(panel, "Which task would you like to remove?", "Remove",
+					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+			tasks.remove(removeTask);
+		} else {
+			JOptionPane.showMessageDialog(frame, "No tasks to remove");
+		}
 
 	}
 
@@ -146,7 +156,7 @@ public class ToDoList implements ActionListener {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			fileName = jfc.getSelectedFile().getAbsolutePath();
 		}
-	
+
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 
