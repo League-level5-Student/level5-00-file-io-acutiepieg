@@ -86,12 +86,9 @@ public class ToDoList implements ActionListener {
 			BufferedReader br = new BufferedReader(new FileReader("src/_03_To_Do_List/list"));
 
 			String line = br.readLine();
-			tasks.add(line);
 			while (line != null) {
+				tasks.add(line);
 				line = br.readLine();
-				if (line != null) {
-					tasks.add(line);
-				}
 			}
 
 			br.close();
@@ -125,11 +122,18 @@ public class ToDoList implements ActionListener {
 	}
 
 	public void remove() {
-		Object[] options = tasks.toArray();
+		
+		if (tasks.size() > 0) {
+			Object[] options = new String[tasks.size() + 1];			
+			options = tasks.toArray();
+			options[options.length - 1] = "cancel";
 
-		if (options.length > 0) {
-			int removeTask = JOptionPane.showConfirmDialog(panel, "Which task would you like to remove?", "Remove",
-					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+			int removeTask = JOptionPane.showOptionDialog(frame, "Remove a task",
+					"Remove", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options,
+					options[options.length - 1]);
+			if(removeTask == options.length - 1) {
+				
+			}
 			tasks.remove(removeTask);
 		} else {
 			JOptionPane.showMessageDialog(frame, "No tasks to remove");
