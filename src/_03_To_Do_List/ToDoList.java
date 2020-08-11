@@ -45,9 +45,11 @@ public class ToDoList implements ActionListener {
 	JButton load;
 	JPanel panel;
 
-	ArrayList<String> tasks = new ArrayList<String>();
+	ArrayList<String> tasks;
 
 	public ToDoList() {
+		tasks = new ArrayList<String>();
+
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 		panel = new JPanel();
@@ -83,7 +85,7 @@ public class ToDoList implements ActionListener {
 
 	public void autoLoad() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("src/_03_To_Do_List/list"));
+			BufferedReader br = new BufferedReader(new FileReader("src/_03_To_Do_List/list.txt"));
 
 			String line = br.readLine();
 			while (line != null) {
@@ -122,19 +124,25 @@ public class ToDoList implements ActionListener {
 	}
 
 	public void remove() {
-		
-		if (tasks.size() > 0) {
-			Object[] options = new String[tasks.size() + 1];			
-			options = tasks.toArray();
-			options[options.length - 1] = "cancel";
 
-			int removeTask = JOptionPane.showOptionDialog(frame, "Remove a task",
-					"Remove", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options,
-					options[options.length - 1]);
-			if(removeTask == options.length - 1) {
-				
+		if (tasks.size() > 0) {
+			Object[] options = new String[tasks.size() + 1];
+			for (int i = 0; i < tasks.size(); i++) {
+				options[i] = tasks.get(i);
 			}
-			tasks.remove(removeTask);
+			options[options.length - 1] = "Cancel";
+
+			try {
+				int removeTask = JOptionPane.showOptionDialog(frame, "Remove a task", "Remove",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options,
+						options[options.length - 1]);
+				if (removeTask != options.length - 1) {
+					tasks.remove(removeTask);
+				}
+			} catch (ArrayIndexOutOfBoundsException e) {
+
+			}
+
 		} else {
 			JOptionPane.showMessageDialog(frame, "No tasks to remove");
 		}
@@ -143,9 +151,9 @@ public class ToDoList implements ActionListener {
 
 	public void save() {
 		try {
-			FileWriter fw = new FileWriter("src/_03_To_Do_List/list", true);
+			FileWriter fw = new FileWriter("src/_03_To_Do_List/list", false);
 			for (String s : tasks) {
-				fw.write(s);
+				fw.write(s + "\n");
 			}
 			fw.close();
 		} catch (IOException e) {
@@ -175,8 +183,7 @@ public class ToDoList implements ActionListener {
 
 			br.close();
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
