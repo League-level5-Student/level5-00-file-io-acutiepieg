@@ -50,3 +50,4 @@ public class FileEncryptor {
 	}
 
 }
+//Copyright © 2020 Aryahi Gupta
